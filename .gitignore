@@ -1,0 +1,11 @@
+# Sistema
+*.log
+*.tmp
+*.swp
+
+# Linux
+.cache/
+.local/
+
+# Outros
+*.bak
