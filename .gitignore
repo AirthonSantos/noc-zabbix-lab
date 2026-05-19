@@ -1,11 +1,18 @@
 # Sistema
-*.log
-*.tmp
 *.swp
 
-# Linux
-.cache/
-.local/
+# VMware
+*.vmdk
+*.vmem
+*.vmsd
+*.nvram
+*.vmx
+*.vbox
+*.ova
+*.ovf
 
-# Outros
-*.bak
+# Logs
+*.log
+
+# Temporários
+*.tmp
