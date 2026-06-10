@@ -37,36 +37,33 @@ Optei por utilizar IP fixo na interface Host-only para evitar problemas com muda
 
 ### Atualização do sistema e Instalação de ferramentas básicas
 
-```
+```bash
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y net-tools curl wget vim htop
 ```
 ## Estrutura do particionamento
 
 <p align="center">
-	<img src="../assets/setup/partitioning.png" alt="Estrutura de Particionamento" width="800">
+	<img src="../assets/01-setup/partitioning.png" alt="Estrutura de Particionamento" width="800">
 </p>
 
 <details>
   <summary>📂 Clique aqui para ver a saída dos comandos lsblk e free</summary>
-
   <br>
 
   - **Saída do comando `lsblk`**
-
     <p align="center">
       <img
-        src="../assets/setup/lsblk_command.png"
+        src="../assets/01-setup/lsblk_command.png"
         alt="Saída do comando lsblk"
         width="800"
       >
     </p>
 
   - **Saída do comando `free`**
-
     <p align="center">
       <img
-        src="../assets/setup/memory_command.png"
+        src="../assets/01-setup/free_command.png"
         alt="Saída do comando free"
         width="800"
       >
@@ -99,14 +96,12 @@ network:
 
 <details>
   <summary>📂 Clique aqui para ver a conexão ssh e o arquivo 01-netcfg.yaml</summary>
-
   <br>
 
 - **Conexão SSH entre host Windows e Ubuntu Server**
-
     <p align="center">
       <img
-        src="../assets/setup/ssh-connection.png"
+        src="../assets/01-setup/ssh-connection.png"
         alt="Conexão SSH funcionando"
         width="800"
       >
@@ -115,7 +110,7 @@ network:
 - **Arquivo 01-netcfg.yaml**
     <p align="center">
       <img
-        src="../assets/setup/netplan-config.png"
+        src="../assets/01-setup/netplan-config.png"
         alt="Arquivo de rede 01-netcfg.png"
         width="800"
       >

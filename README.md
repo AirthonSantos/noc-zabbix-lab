@@ -1,10 +1,10 @@
 # 📡 Laboratório NOC com Zabbix
 
-A proposta do projeto é simular um ambiente básico de NOC (Network Operations Center) em uma infraestrutura virtualizada utilizando VMware Workstation e Ubuntu Server.
+Este projeto tem como objetivo simular um ambiente básico de NOC (Network Operations Center) usando tecnologias amplamente usadas em operações de infraestrutura e monitoramento.
 
-A ideia do laboratório é praticar troubleshooting, monitoramento e administração Linux em um ambiente mais próximo do mundo real. Além disso, o projeto também funciona como espaço de estudo e experimentação, então parte da documentação inclui erros, ajustes e resolução de problemas realizados durante a implementação.
+O laboratório foi construído em uma infraestrutura virtualizada com Ubuntu Server, VMware Workstation e Zabbix, permitindo a prática de monitoramento, troubleshooting, administração Linux e análise de incidentes em um ambiente controlado. Além da implementação técnica, procurei documentar todo o processo, incluindo problemas encontrados, decisões tomadas e soluções aplicadas durante a implementação do ambiente.
 
-Futuramente, o ambiente também servirá como base para testes de automação com Ansible.
+Posteriormente, pretendo expandir o laboratório com dashboards avançados com Grafana e automações operacionais com Ansible.
 
 > [!IMPORTANT]
 > **Status do Lab:** 🚧 Em desenvolvimento
@@ -12,60 +12,63 @@ Futuramente, o ambiente também servirá como base para testes de automação co
 ---
 # 🎯 Objetivos
 
-- Implementar um ambiente de monitoramento utilizando Zabbix
-- Monitorar serviços e hosts
-- Simular cenários operacionais de um ambiente NOC
-- Desenvolver habilidades práticas em Linux, redes, troubleshooting e automação
-- Documentar todo o processo de implementação e configuração
+- Implementar uma plataforma de monitoramento baseada em Zabbix
+- Monitorar hosts, métricas e serviços críticos
+- Criar dashboards para visualização operacional
+- Simular incidentes e validar mecanismos de detecção
+- Desenvolver e testar triggers personalizadas
+- Praticar troubleshooting em ambientes Linux
+- Implementar visualizações avançadas com Grafana
+- Automatizar tarefas administrativas com Ansible
+- Documentar todo o processo de implementação e evolução do laboratório
 
 ---
-
-# 🧱 Tecnologias Utilizadas
+# 🧱 Tecnologias Usadas
 
 | Tecnologia          | Função                      |
 | ------------------- | --------------------------- |
 | Ubuntu Server 24.04 | Sistema Operacional         |
 | Zabbix 6.4          | Plataforma de monitoramento |
+| Grafana             | Visualização de métricas    |
+| Ansible             | Automação e gerenciamento   |
 | MariaDB             | Banco de dados              |
 | Apache2             | Frontend Web                |
 | VMware Workstation  | Virtualização               |
+| WSL2                | Host Linux adicional        |
 | Netplan             | Configuração de rede        |
 
 ---
-# 🖥️ Estrutura do Laboratório
-
-- Ubuntu Server virtualizado no VMware
-- Rede NAT + Host-only
-- Acesso remoto via SSH
-- Frontend web do Zabbix
-- Monitoramento via Zabbix Agent
-
----
-
 # 📚 Documentação
 
-| Documento                                                   | Descrição                                         |
-| ----------------------------------------------------------- | ------------------------------------------------- |
-| [01 - Setup Inicial](./docs/01-setup-inicial.md)            | Configuração inicial da infraestrutura e rede     |
-| [02 - Instalação do Zabbix](./docs/02-instalacao-zabbix.md) | Instalação manual e configuração do Zabbix Server |
+| Documento                                                        | Descrição                                                                                                                |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [01 - Setup Inicial](./docs/01-setup-inicial.md)                 | Configuração inicial da infraestrutura e rede                                                                            |
+| [02 - Instalação do Zabbix](./docs/02-instalacao-zabbix.md)      | Instalação e configuração do Zabbix Server                                                                               |
+| [03 - Monitoramento Parte 1](./docs/03-monitoramento-parte-1.md) | Configuração do primeiro host, validação de métricas e triggers, e consequentemente a validação do ambiente como um todo |
+| [04 - Monitoramento Parte 2](./docs/04-monitoramento-parte-2.md) | Adição de segundo host, dashboard personalizado, trigger customizada e monitoramento de serviços                         |
+| [05 - Integração com Grafana](./docs/05-grafana.md)              | Dashboards avançados e visualização de métricas *(em desenvolvimento)*                                                   |
+| [06 - Automação com Ansible](./docs/06-ansible.md)               | Automação operacional e playbooks *(em desenvolvimento)*                                                                 |
 
 ---
-
 # 📸 Screenshots
 
+## Dashboard Global View
 <p align="center">
-  <img src="./assets/zabbix/zabbix-dashboard.png" alt="Dashboard do Zabbix" width="900">
+  <img src="./assets/02-instalacao-zabbix/zabbix-dashboard.png" alt="Dashboard padrão do Zabbix" width="900">
+</p>
+
+## Dashboard operacional personalizado durante teste de monitoramento
+<p align="center">
+  <img src="./assets/04-monitoramento-p2/memory_trigger_comparison.png" alt="Dashboard personalizado" width="900">
 </p>
 
 ---
 # 🚧 Próximos Passos
 
-- Adicionar hosts monitorados
-- Criar triggers e alertas
-- Configurar dashboards
-- Simular incidentes
-- Automatizar tarefas operacionais com Ansible
-- Expandir o ambiente de monitoramento
+- Integrar Zabbix e Grafana
+- Criar dashboards operacionais no Grafana
+- Automatizar tarefas administrativas com Ansible
+- Desenvolver playbooks de configuração e operação
 
 ---
 
