@@ -25,7 +25,7 @@ O segundo problema envolvia a diretiva `Server`. Mesmo com o Zabbix Agent em exe
   <br>
     <p align="center">
       <img
-        src="../assets/03-monitoramento-p1/host_not_available.png"
+        src="../assets/03-monitoramento-parte-1/host_not_available.png"
         alt="Erro not avaliable"
         width="800"
       >
@@ -47,7 +47,7 @@ Após a correção das configurações, o host passou a responder normalmente à
 
 <p align="center">
   <img
-	src="../assets/03-monitoramento-p1/host_available_after_configuration.png"
+	src="../assets/03-monitoramento-parte-1/host_available_after_configuration.png"
 	alt="Host atualizado no Zabbix"
 	width="800"
 >
@@ -62,7 +62,7 @@ Todas as métricas exibidas abaixo foram criadas automaticamente pelo template p
 - **Métricas criadas pelo Template "Linux by Zabbix agent"**
     <p align="center">
       <img
-        src="../assets/03-monitoramento-p1/linux_template_metrics.png"
+        src="../assets/03-monitoramento-parte-1/linux_template_metrics.png"
         alt="Métricas do Zabbix"
         width="800"
       >
@@ -71,7 +71,7 @@ Todas as métricas exibidas abaixo foram criadas automaticamente pelo template p
 - **Gráficos do Zabbix**
 	<p align="center">
       <img
-        src="../assets/03-monitoramento-p1/zabbix_monitoring_dashboard.png"
+        src="../assets/03-monitoramento-parte-1/zabbix_monitoring_dashboard.png"
         alt="Dashboards do Zabbix"
         width="800"
       >
@@ -84,7 +84,7 @@ Minha ideia inicial era criar triggers personalizadas. Mas antes disso, decidi v
 
 <p align="center">
   <img
-	src="../assets/03-monitoramento-p1/high_cpu_trigger.png"
+	src="../assets/03-monitoramento-parte-1/high_cpu_trigger.png"
 	alt="Trigger do alto consumo de CPU"
 	width="800"
 >
@@ -100,7 +100,7 @@ stress --cpu 2 --timeout 360
 Após a execução, o dashboard do Zabbix registrou o aumento no consumo de processamento:
 <p align="center">
       <img
-        src="../assets/03-monitoramento-p1/cpu_usage_graph.png"
+        src="../assets/03-monitoramento-parte-1/cpu_usage_graph.png"
         alt="Gráfico do uso de CPU "
         width="800"
       >
@@ -112,7 +112,7 @@ Durante os testes, o Zabbix identificou não só o alto consumo de processamento
 
 <p align="center">
       <img
-        src="../assets/03-monitoramento-p1/cpu_and_package_change_triggers.png"
+        src="../assets/03-monitoramento-parte-1/cpu_and_package_change_triggers.png"
         alt="Triggers acionadas durante o teste"
         width="800"
       >
@@ -127,7 +127,7 @@ Após a validação dos alertas, os eventos foram reconhecidos manualmente por m
 - **Trigger do alto uso de CPU**
     <p align="center">
       <img
-        src="../assets/03-monitoramento-p1/high_cpu_trigger_acknowledged.png"
+        src="../assets/03-monitoramento-parte-1/high_cpu_trigger_acknowledged.png"
         alt="Trigger do alto uso de CPU"
         width="800"
       >
@@ -136,7 +136,7 @@ Após a validação dos alertas, os eventos foram reconhecidos manualmente por m
 - **Trigger de mudança do sistema**
 	<p align="center">
       <img
-        src="../assets/03-monitoramento-p1/system_change_trigger_acknowledged.png"
+        src="../assets/03-monitoramento-parte-1/system_change_trigger_acknowledged.png"
         alt="Trigger de mudança do sistema"
         width="800"
       >
@@ -148,7 +148,7 @@ A imagem abaixo mostra os detalhes do evento após o reconhecimento (acknowledge
 
 <p align="center">
       <img
-        src="../assets/03-monitoramento-p1/high_cpu_event_details.png"
+        src="../assets/03-monitoramento-parte-1/high_cpu_event_details.png"
         alt="Detalhes do evento da trigger da CPU"
         width="800"
       >

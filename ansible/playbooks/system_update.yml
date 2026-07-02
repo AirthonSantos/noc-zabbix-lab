@@ -1,0 +1,18 @@
+---
+- name: Atualizar e limpar sistema
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Atualizar cache do APT
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Atualizar todos os pacotes
+      ansible.builtin.apt:
+        upgrade: dist
+
+    - name: Remover pacotes órfãos
+      ansible.builtin.apt:
+        autoremove: yes

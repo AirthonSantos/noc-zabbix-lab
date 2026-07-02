@@ -1,0 +1,32 @@
+---
+- name: Verificar saúde dos hosts
+  hosts: all
+  gather_facts: yes
+
+  tasks:
+    - name: Exibir hostname
+      ansible.builtin.debug:
+        msg: "Host: {{ ansible_hostname }}"
+
+    - name: Exibir uptime
+      ansible.builtin.command: uptime -p
+      register: uptime_result
+
+    - name: Mostrar uptime
+      ansible.builtin.debug:
+        msg: "{{ uptime_result.stdout }}"
+
+    - name: Exibir uso do disco
+      ansible.builtin.command: df -h /
+      register: disk_result
+
+    - name: Mostrar uso do disco
+      ansible.builtin.debug:
+        msg: "{{ disk_result.stdout_lines }}"
+
+    - name: Exibir memória disponível
+      ansible.builtin.debug:
+        msg: >
+          Memória livre:
+          {{ ansible_memfree_mb }} MB /
+          {{ ansible_memtotal_mb }} MB

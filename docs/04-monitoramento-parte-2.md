@@ -8,14 +8,14 @@ O objetivo desta etapa foi expandir o ambiente de monitoramento, ao adicionar um
 
 Para o segundo host monitorado, optei por usar o WSL. Além de ser uma solução leve, ele permitiu expandir o laboratório sem a necessidade de criar uma nova máquina virtual. Embora algumas métricas e serviços funcionem de maneira diferente em relação a uma VM tradicional, o WSL foi suficiente para validar a comunicação entre múltiplos hosts e o Zabbix Server.
 
-Primeiro tive que me certificar que havia conexão entre o WSL e a VM (Zabbix Server), para isso realizei um ping entre eles.
+Antes de instalar o Zabbix Agent, verifiquei se havia conectividade entre o WSL e a VM (Zabbix Server). Para isso, realizei um teste com o comando `ping`.
 
 <details>
   <summary>📂 Clique aqui para ver o comando ping</summary>
   <br>
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/ping_vm_to_wsl.png"
+        src="../assets/04-monitoramento-parte-2/ping_vm_to_wsl.png"
         alt="Comando Ping"
         width="800"
       >
@@ -30,32 +30,38 @@ Após instalar o Zabbix Agent no WSL, o host não conseguia ser monitorado pelo 
   <br>
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/zabbix_agent_logs.png"
+        src="../assets/04-monitoramento-parte-2/zabbix_agent_logs.png"
         alt="Logs emitidos pelo Zabbix Agent"
         width="800"
       >
     </p>
 </details>
 
-O log mostrava que a conexão não chegava usando o endereço da VM Zabbix (`192.168.85.10`), mas sim através do endereço `172.21.128.1`.
+O log mostrava que as conexões não eram identificadas como originadas do endereço IP da VM (`192.168.85.10`), mas sim do endereço `172.21.128.1`.
 
-Após investigar o comportamento, identifiquei que o Windows atua como intermediário entre a VM e o WSL através de uma NAT interna. Basicamente, o Windows atua como um gateway entre eles. Por esse motivo, o agente não enxergava a conexão como originada da VM, mas sim da interface NAT interna do Windows.
-### Alteração para monitoramento ativo
-Embora fosse possível ajustar o parâmetro `Server` para permitir a rede NAT interna do WSL (`172.21.0.0/16`), preferi usar apenas o monitoramento ativo. Porque assim elimino a dependência de conexões iniciadas pelo servidor e evito problemas relacionados à mudança dinâmica de IP no WSL.
+Após investigar esse comportamento, identifiquei que o Windows atua como intermediário entre a VM e o WSL por meio de uma NAT interna. Na prática, ele funciona como um gateway entre ambos, fazendo com que o Zabbix Agent enxergasse as conexões como originadas da interface NAT do Windows, e não diretamente da VM.
+### Ajuste da configuração do agente
+Inicialmente considerei migrar o agente para o modo ativo, eliminando a necessidade de conexões iniciadas pelo servidor. No entanto, durante novos testes percebi que o problema estava relacionado apenas às conexões passivas.
+
+Em uma das reinicializações do WSL, observei que a rede virtual havia sido recriada automaticamente e o gateway NAT passou a utilizar um novo endereço IP (`172.21.144.1`). Como esse endereço não estava autorizado na diretiva `Server`, o agente voltou a rejeitar as conexões iniciadas pelo Zabbix Server.
+
+A solução nesse caso foi manter o monitoramento em modo híbrido e autorizar tanto o endereço da VM quanto o gateway NAT usado pelo WSL. Assim, o agente passou a aceitar conexões de ambos os endereços, permitindo preservar tanto as coletas passivas quanto as ativas, sem a necessidade de alterar a arquitetura do laboratório.
 
 A configuração final ficou:
 ```ini
+Server=192.168.85.10,172.21.144.1
 ServerActive=192.168.85.10
 Hostname=WSL-Ubuntu
 ```
 
-Após ajustar essa configuração do agente, o host passou a ser monitorado corretamente pelo Zabbix Server. Com as métricas já sendo coletadas dos dois hosts, o próximo passo foi criar uma visualização consolidada dessas informações.
+Após esse ajuste, tanto as consultas passivas quanto os envios ativos passaram a funcionar corretamente, permitindo que o host voltasse a ser monitorado pelo Zabbix Server. Com as métricas sendo coletadas normalmente em ambos os hosts, o próximo passo foi construir uma visualização consolidada dessas informações.
+
 ## Criação do Dashboard personalizado
 
-Com esse objetivo, criei um dashboard personalizado contendo widgets e gráficos relacionando o Zabbix Server e o WSL. A única exceção foi o gráfico do sistema de arquivos. Como o WSL não disponibiliza as mesmas métricas de armazenamento presentes na VM, usei apenas as métricas do Zabbix Server para essa visualização.
+Com esse objetivo, criei um dashboard personalizado contendo widgets e gráficos relacionando as métricas coletadas do Zabbix Server e o WSL. A única exceção foi o gráfico do sistema de arquivos. Como o WSL não disponibiliza as mesmas métricas de armazenamento presentes na VM, usei apenas as métricas do Zabbix Server para essa visualização.
 <p align="center">
 	<img
-	src="../assets/04-monitoramento-p2/zabbix_custom_dashboard.png"
+	src="../assets/04-monitoramento-parte-2/zabbix_custom_dashboard.png"
 	alt="Dashboard personalizado"
 	width="800"
 	>
@@ -79,7 +85,7 @@ A ideia é que sempre que a última coleta de dados da métrica de uso de memór
 - **Criação da trigger**
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/create_memory_trigger.png"
+        src="../assets/04-monitoramento-parte-2/create_memory_trigger.png"
         alt="Criação da trigger"
         width="800"
       >
@@ -88,7 +94,7 @@ A ideia é que sempre que a última coleta de dados da métrica de uso de memór
 - **Validação da trigger**
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/memory_trigger_validation.png"
+        src="../assets/04-monitoramento-parte-2/memory_trigger_validation.png"
         alt="Validação da trigger criada"
         width="800"
       >
@@ -111,7 +117,7 @@ No entanto, encontrei um problema durante a execução desse comando. O `stress-
 A imagem abaixo mostra as oscilações de memória geradas pelo `stress-ng`, evidenciando as quedas de uso que impediam o acionamento da trigger padrão.
 <p align="center">
   <img
-	src="../assets/04-monitoramento-p2/stress_ng_memory_oscillation.png"
+	src="../assets/04-monitoramento-parte-2/stress_ng_memory_oscillation.png"
 	alt="Oscilação causada pelo stress-ng"
 	width="800"
 >
@@ -130,7 +136,7 @@ Após a alteração, o consumo de memória permaneceu estável durante toda a ex
 A imagem abaixo mostra o pico de uso de memória e os eventos gerados por cada uma das triggers.
 <p align="center">
 	<img
-	src="../assets/04-monitoramento-p2/memory_trigger_comparison.png"
+	src="../assets/04-monitoramento-parte-2/memory_trigger_comparison.png"
 	alt="Trigger padrão e personalizada"
 	width="800"
 	>
@@ -160,7 +166,7 @@ sudo systemctl start zabbix-agent
 - **Evento gerado pela parada do Zabbix Agent**
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/zabbix_agent_incident.png"
+        src="../assets/04-monitoramento-parte-2/zabbix_agent_incident.png"
         alt="Incidente simulado do Zabbix_Agent"
         width="800"
       >
@@ -169,7 +175,7 @@ sudo systemctl start zabbix-agent
 - **Evento resolvido após a inicialização do Zabbix Agent**
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/zabbix_agent_incident_resolved.png"
+        src="../assets/04-monitoramento-parte-2/zabbix_agent_incident_resolved.png"
         alt="Incidente simulado do Zabbix_Agent resolvido"
         width="800"
       >
@@ -188,7 +194,7 @@ Para monitorar o SSH, foi necessário criar um item e uma trigger. O item foi co
 - **Criação do Item para o SSH**
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/ssh_item_creation.png"
+        src="../assets/04-monitoramento-parte-2/ssh_item_creation.png"
         alt="Criação do Item para monitoramento do SSH"
         width="800"
       >
@@ -197,7 +203,7 @@ Para monitorar o SSH, foi necessário criar um item e uma trigger. O item foi co
 - **Criação da Trigger para o SSH**
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/ssh_trigger_creation.png"
+        src="../assets/04-monitoramento-parte-2/ssh_trigger_creation.png"
         alt="Criação da Trigger para monitoramento do SSH"
         width="800"
       >
@@ -224,7 +230,7 @@ Assim que a porta TCP 22 voltou a responder, o Zabbix identificou a recuperaçã
 - **Evento gerado pela indisponibilidade do serviço SSH**
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/ssh_incident.png"
+        src="../assets/04-monitoramento-parte-2/ssh_incident.png"
         alt="Incidente simulado do SSH"
         width="800"
       >
@@ -233,7 +239,7 @@ Assim que a porta TCP 22 voltou a responder, o Zabbix identificou a recuperaçã
 - **Evento resolvido após o restabelecimento do serviço SSH**
     <p align="center">
       <img
-        src="../assets/04-monitoramento-p2/ssh_incident_resolved.png"
+        src="../assets/04-monitoramento-parte-2/ssh_incident_resolved.png"
         alt="Incidente simulado do SSH resolvido"
         width="800"
       >
